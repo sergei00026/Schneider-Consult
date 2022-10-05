@@ -1,0 +1,296 @@
+@use "sass:math";
+
+// Подключение миксинов ===========================================================================================================================================================================================================================================================================
+@import "base/mixins";
+
+// Подключение шрифтов ===========================================================================================================================================================================================================================================================================
+//&display=swap - добавить при подключении через плагин
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,regular,500,600,700,800,300italic,italic,500italic,600italic,700italic,800italic);
+@import url(https://fonts.googleapis.com/css?family=PT+Sans:regular,italic,700,700italic);
+
+// Подключить если есть локальные файлы шрифтов
+//@import "fonts/fonts";
+
+// Подключение иконочных шрифтов ==============================================================================================================================================================================================================================================================================
+// Подключить если есть файл иконочного шрифта
+//@import "fonts/icons";
+
+// Шрифт по умолчанию =================================================================================================
+$fontFamily: "Open Sans";
+$fontSize: rem(14); // где 14(px) - размер шрифта по умолчанию из макета
+
+// Основные цвета
+$mainColor: #fff; // Цвет шрифта по умолчанию
+
+// Настройки адаптивной сетки ===============================================================================================================================================================================================================================================================================================
+
+// Минимальная ширина страницы
+$minWidth: 320;
+// Ширина полотна (макета)
+$maxWidth: 1400;
+// Ширина ограничивающего контейнера (0 = нет ограничения)
+$maxWidthContainer: 980;
+// Общий отступ у контейнера
+// (30 = по 15px слева и справа, 0 = нет отступа)
+$containerPadding: 20;
+
+// Ширина срабатывания первого брейкпоинта
+$containerWidth: $maxWidthContainer + $containerPadding;
+
+// Брейк-поинты
+$pc: em($containerWidth); // ПК, ноутбуки, некоторые планшеты в горизонтальном положении
+$tablet: em(991.98); // Планшеты, некоторые телефоны в горизонтальном положении
+$mobile: em(767.98); // Телефоны L
+$mobileSmall: em(479.98); // Телефоны S
+
+// Тип адаптива:
+// 1 = отзывчивость (у контейнера нет брейкпоинтов),
+// 2 = по брейк-поинтам (контейнер меняет свою ширину по брейк-поинтам)
+$responsiveType: 1;
+
+// Обнуление =================================================================================================
+@import "base/null";
+
+// Стили тега BODY =================================================================================================
+
+body {
+	// Скролл заблокирован
+	.lock & {
+		overflow: hidden;
+		touch-action: none;
+	}
+	// Сайт загружен
+	.loaded & {
+	}
+}
+
+// Оболочка wrapper =================================================================================================
+.wrapper {
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	// Прижимаем footer
+	> main {
+		flex: 1 1 auto;
+	}
+	// Фикс для слайдеров
+	> * {
+		min-width: 0;
+	}
+}
+// Ограничивающий контейнер ======================================================================================================================================================================================================================
+
+/*
+(i) Стили будут применяться ко 
+всем классам содержащим *__container
+Например header__container, main__container и т.д.
+Снипет (HTML): cnt
+*/
+@if ($responsiveType==1) {
+	// Отзывчивая
+	[class*="__container"] {
+		@if ($maxWidthContainer>0) {
+			max-width: rem($maxWidthContainer);
+			box-sizing: content-box;
+			margin: 0 auto;
+		}
+		@if ($containerPadding>0) {
+			padding: 0 rem(math.div($containerPadding, 2));
+		}
+	}
+} @else {
+	// По брейк-поинтам
+	[class*="__container"] {
+		margin: 0 auto;
+		@if ($maxWidthContainer>0) {
+			max-width: rem($maxWidthContainer);
+			box-sizing: content-box;
+		} @else {
+			@if ($containerPadding>0) {
+				padding: 0 rem(math.div($containerPadding, 2));
+			}
+		}
+		@media (max-width: $pc) {
+			max-width: rem(970);
+		}
+		@media (max-width: $tablet) {
+			max-width: rem(750);
+		}
+		@media (max-width: $mobile) {
+			max-width: none;
+			@if ($containerPadding>0 and $maxWidthContainer>0) {
+				padding: 0 rem(math.div($containerPadding, 2));
+			}
+		}
+	}
+}
+
+// Подключение базовых стилей, шаблонов (заготовок) и вспомогательных  классов
+// Для подключения/отключения конкретных стилей смотри base.scss
+@import "base";
+
+// Подключение стилей общих элементов проекта
+@import "common";
+
+// Подключение стилей отдельных блоков
+@import "header";
+@import "footer";
+
+// Подключение стилей отдельных страниц
+
+.page {
+	// .slider__page
+	&__slider {
+	}
+	// .page__content
+	&__content {
+	}
+}
+// ===================
+.slider-page {
+	// .page-slider__slider
+	&__slider {
+	}
+	// .page-slider__wrapper
+	&__wrapper {
+	}
+	// .page-slider__slide
+	&__slide {
+		cursor: pointer;
+		img {
+			object-fit: cover;
+			// position: absolute;
+			width: 100%;
+			// padding-bottom: 100%;
+		}
+	}
+}
+//============================
+.content-page {
+	@include adaptiveValue("padding-top", 48, 20);
+	padding-bottom: 48px;
+
+	// .content-page__container
+	&__container {
+	}
+	// .content-page__body
+	&__body {
+		display: grid;
+
+		@media (min-width: $tablet) {
+			grid-template-columns: 350px 1fr;
+			gap: 59px;
+		}
+	}
+	// .content-page__news
+	&__news {
+	}
+	// .content-page__content
+	&__content {
+	}
+}
+.news-content {
+	background: #777;
+	padding: 22px 34px 33px 36px;
+	display: flex;
+	flex-direction: column;
+	// .news-content__title
+	&__title {
+		font-family: "PT Sans";
+		@include adaptiveValue("font-size", 40, 28);
+		line-height: math.div(46, 40);
+		font-weight: 700;
+		letter-spacing: 0.025em;
+		&:not(:last-child) {
+			margin-bottom: 38px;
+		}
+	}
+	&__items {
+		flex: 1 1 auto;
+	}
+	// .news-content__item
+	&__item {
+		margin-bottom: 18px;
+	}
+	// .news-content__data
+	&__data {
+		font-size: 14px;
+		line-height: math.div(22, 14);
+		font-weight: 300;
+		font-style: italic;
+		letter-spacing: 0.025em;
+	}
+	// .news-content__link
+	&__link {
+		font-weight: 400;
+		font-style: normal;
+	}
+	// .news-content__arhiv
+	&__arhiv {
+		justify-self: end;
+		align-self: end;
+	}
+}
+.content {
+	color: #767676;
+	padding-top: 22px;
+
+	// .content__main
+	&__main {
+		&:not(:last-child) {
+			margin-bottom: 37px;
+		}
+	}
+	// .content__title
+	&__title {
+		@include adaptiveValue("font-size", 33, 20);
+		line-height: math.div(38, 33);
+		margin-bottom: 25px;
+	}
+	// .content__box
+	&__box {
+		font-size: 14px;
+		letter-spacing: 0.025em;
+		& > p {
+			&:not(:last-child) {
+				margin-bottom: 30px;
+			}
+		}
+	}
+	// .content__block
+	&__block {
+	}
+	// .content__subtitle
+	&__subtitle {
+		font-size: 24px;
+		line-height: math.div(22, 24);
+		&:not(:last-child) {
+			margin-bottom: 43px;
+		}
+	}
+	// .content__list
+	&__list {
+		display: grid;
+		gap: 30px;
+		@media (min-width: $mobileSmall) {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 43px;
+		}
+	}
+	// .content__item
+	&__item {
+		font-size: 14px;
+		line-height: math.div(22, 14);
+		letter-spacing: 0.025em;
+		p {
+			font-weight: 400;
+			hyphens: auto;
+		}
+	}
+	// .content__heading
+	&__heading {
+		font-weight: 700;
+		@include adaptiveValue("margin-bottom", 31, 20);
+	}
+}
